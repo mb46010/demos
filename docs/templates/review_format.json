@@ -1,0 +1,33 @@
+{
+    "version": "1.0",
+    "sections": [
+        {
+            "title": "Year Goals",
+            "description": "Year Goals"
+        },
+        {
+            "title": "Successes",
+            "description": "Successes"
+        },
+        {
+            "title": "Challenges",
+            "description": "Challenges"
+        },
+        {
+            "title": "Performance rating and discussion",
+            "description": "Performance rating and discussion"
+        },
+        {
+            "title": "Strengths",
+            "description": "Strengths"
+        },
+        {
+            "title": "Development Areas",
+            "description": "Development Areas"
+        },
+        {
+            "title": "Feedback",
+            "description": "Feedback"
+        }
+    ]
+}

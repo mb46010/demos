@@ -1,0 +1,23 @@
+{
+    "employee": "Software Engineer, 2 years tenure",
+    "rating": "Exceeds expectations",
+    "manager_bullets": [
+        {
+            "text": "Led migration of payment service to Kubernetes",
+            "rating": "Exceeds expectations"
+        },
+        {
+            "text": "Reduced deployment time from 2 hours to 15 minutes",
+            "rating": "Meets expectations"
+        },
+        {
+            "text": "Mentored two junior engineers",
+            "rating": "Exceeds expectations"
+        },
+        {
+            "text": "Sometimes misses deadlines when overloaded",
+            "rating": "Does not meet expectations"
+        }
+    ]
+}
+}

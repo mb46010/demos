@@ -1,0 +1,25 @@
+{
+    "version": "1.0",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "performance_rating": {
+                "type": "string",
+                "enum": [
+                    "Strongly exceeds expectations",
+                    "Exceeds expectations",
+                    "Meets expectations",
+                    "Partially meets expectations",
+                    "Does not meet expectations"
+                ]
+            }
+        }
+    },
+    "qualifiers": {
+        "Strongly exceeds expectations": "excellent",
+        "Exceeds expectations": "good",
+        "Meets expectations": "satisfactory",
+        "Partially meets expectations": "almost satisfactory",
+        "Does not meet expectations": "poor",
+    }
+}
