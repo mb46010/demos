@@ -1,0 +1,23 @@
+{
+    "manager_id": "12345678-1234-1234-1234-123456789012",
+    "employee": "Software Engineer, 2 years tenure",
+    "rating": "Exceeds expectations",
+    "manager_bullets": [
+        {
+            "text": "Led migration of payment service to Kubernetes, completed one month earlier than expected",
+            "rating": "Does not meet expectations"
+        },
+        {
+            "text": "Reduced deployment time from 2 hours to 15 minutes, as per KPI",
+            "rating": "Does not meet expectations"
+        },
+        {
+            "text": "Mentored two junior engineers, with positive feedback from them and successfull upskilling",
+            "rating": "Exceeds expectations"
+        },
+        {
+            "text": "Sometimes misses deadlines when overloaded, due to capacity issues. Communication MUST improve.",
+            "rating": "Does not meet expectations"
+        }
+    ]
+}

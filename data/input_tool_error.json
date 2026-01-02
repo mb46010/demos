@@ -1,0 +1,11 @@
+{
+    "manager_id": "",
+    "employee": "Software Engineer",
+    "rating": "Exceeds expectations",
+    "manager_bullets": [
+        {
+            "text": "Good job",
+            "rating": "Invalid Rating"
+        }
+    ]
+}
