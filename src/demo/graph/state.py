@@ -7,16 +7,20 @@ from typing_extensions import Annotated, TypedDict
 # from langgraph.graph import MessagesState
 
 
-class GraphState(TypedDict):
-    """State of the graph."""
+class InputState(TypedDict):
+    """Input state for the graph."""
 
     input: Dict[str, Any]
     structure: Dict[str, Any]
     qualifiers: Dict[str, Any]
-    draft: Dict[str, Any]
     manager_id: str
+
+
+class GraphState(InputState):
+    """State of the graph."""
+
+    draft: Optional[Dict[str, Any]]
     check_result: Optional[Dict[str, Any]]
-    last_node: Optional[str]
 
 
 # class MessagesState(TypedDict):

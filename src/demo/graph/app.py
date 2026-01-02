@@ -7,6 +7,14 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 
+from demo.graph.consts import (
+    KEY_CHECK_RESULT,
+    KEY_DRAFT,
+    KEY_INPUT,
+    KEY_MANAGER_ID,
+    KEY_QUALIFIERS,
+    KEY_STRUCTURE,
+)
 from demo.graph.graph import create_agent
 from demo.utils.loader import get_manager_id, load_data
 from demo.utils.save_json import save_json
@@ -36,18 +44,26 @@ if __name__ == "__main__":
     pprint(data["input"])
 
     config = {
-        "input": data["input"],
-        "structure": data["structure"],
-        "qualifiers": data["qualifiers"],
-        "manager_id": get_manager_id(data["input"]),
+        KEY_INPUT: data["input"],
+        KEY_STRUCTURE: data["structure"],
+        KEY_QUALIFIERS: data["qualifiers"],
+        KEY_MANAGER_ID: get_manager_id(data["input"]),
     }
 
     response = agent.invoke(config)
-    last_stage_name = response.get("last_node")
-    last_stage_result = response.get(last_stage_name)
 
-    print("Last stage result:")
-    pprint(last_stage_result)
+    # Check if we have a draft (success path) or just check result (failure path)
+    if response.get(KEY_DRAFT):
+        print("Success! Draft created.")
+        pprint(response[KEY_DRAFT])
+        final_output = response[KEY_DRAFT]
+    else:
+        print("Validation failed or incomplete.")
+        pprint(response.get(KEY_CHECK_RESULT))
+        final_output = response.get(KEY_CHECK_RESULT)
+
+    print("Final State Keys:")
+    pprint(list(response.keys()))
 
     timedate = datetime.now().strftime("%Y%m%d_%H%M%S")
     save_json(response, f"data/output_{timedate}.json")

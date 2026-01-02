@@ -9,6 +9,7 @@ from typing import List, Optional
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
+from demo.graph.consts import KEY_CHECK_RESULT, KEY_INPUT, KEY_QUALIFIERS
 from demo.graph.model import llm
 from demo.graph.state import GraphState
 from demo.tools.validate_input import validate_input
@@ -34,6 +35,8 @@ def input_check(state: GraphState):
     2. Feeds both the input and tool results to an LLM for semantic check.
     3. Merges results and ensures consistency (e.g., if errors exist, valid must be False).
     """
+    logger.info("Stage: %s started.", KEY_CHECK_RESULT)
+
     # Load prompt and join if it's a list
     prompt_raw = load_prompt(Path("src/prompts/n_input.json"))
     if isinstance(prompt_raw, list):
@@ -42,11 +45,11 @@ def input_check(state: GraphState):
         prompt_template = prompt_raw
 
     # Validate input
-    validation_result = validate_input(state["input"], state["qualifiers"])
+    validation_result = validate_input(state[KEY_INPUT], state[KEY_QUALIFIERS])
 
     # Fill the prompt
     filled_prompt = prompt_template.format(
-        manager_input=json.dumps(state["input"], indent=2),
+        manager_input=json.dumps(state[KEY_INPUT], indent=2),
         validation_tool_output=json.dumps(validation_result, indent=2),
     )
 
@@ -107,16 +110,16 @@ def input_check(state: GraphState):
     print("Final Validation Result:")
     pprint(final_result)
 
-    state["check_result"] = final_result
-    state["last_node"] = "check_result"
-
-    return state
+    logger.info("Stage: %s passed.", KEY_CHECK_RESULT)
+    return {KEY_CHECK_RESULT: final_result}
 
 
 def check_valid(state: GraphState):
     """Gate function to check if valid == True."""
     # Safe access using .get() to handle cases where check_result or valid might be missing/None
-    check_result = state.get("check_result")
+    check_result = state.get(KEY_CHECK_RESULT)
     if check_result and check_result.get("valid"):
+        logger.info("Edge: %s value is True.", KEY_CHECK_RESULT)
         return "True"
+    logger.info("Edge: %s value is False.", KEY_CHECK_RESULT)
     return "False"
