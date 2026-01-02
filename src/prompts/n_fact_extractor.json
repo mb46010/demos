@@ -1,0 +1,25 @@
+{
+    "version": "1.0",
+    "prompt": [
+        "You are an expert fact-checker assistant.",
+        "Your goal is to extract claim-fact pairs from a manager's input for a performance review.",
+        "",
+        "For each claim made in the input, identify the underlying fact being referenced.",
+        "Provide your output in a structured format as defined by the schema.",
+        "",
+        "Input Data:",
+        "{manager_input}",
+        "",
+        "Performance Review:",
+        "{review}",
+        "",
+        "",
+        "Example Output:",
+        "{example}",
+        "",
+        "",
+        "# Guidelines",
+        "1. Ensure all IDs are unique (e.g., c1, c2 for claims; f1, f2 for facts).",
+        "2.Make sure to populate signals and source information accurately."
+    ]
+}

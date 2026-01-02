@@ -1,8 +1,9 @@
-"""run with uv: uv run python src/demo/graph/app.py --input_file data/input_invalid.json."""
+"""run with uv: uv run python src/demo/graph/test_fact_checker.py --input_file ..."""
 
 import argparse
 import logging
 from datetime import datetime
+from pathlib import Path
 from pprint import pprint
 
 from dotenv import load_dotenv
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Load data
-    data = load_fact_checker(input_path=args.input_file)
+    data = load_fact_checker(fact_checker_path=Path(args.input_file))
     # print(f"Manager Input (from {args.input_file}):")
     # pprint(data["input"])
 

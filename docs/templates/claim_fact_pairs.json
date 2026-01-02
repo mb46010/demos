@@ -1,0 +1,86 @@
+{
+    "version": "1.0",
+    "claims": [
+        {
+            "claim_id": "c1",
+            "text": "Led migration of payment service to Kubernetes, completing one month ahead of schedule.",
+            "source": {
+                "section": "Successes",
+                "sentence_index": 0
+            },
+            "signals": {
+                "numbers": [
+                    "one month"
+                ],
+                "dates": [],
+                "percentages": [],
+                "currency": [],
+                "quantities": [],
+                "acronyms": [
+                    "Kubernetes"
+                ],
+                "entities": [
+                    "payment service",
+                    "Kubernetes"
+                ],
+                "qualifiers": [
+                    "ahead of schedule"
+                ],
+                "modality": [],
+                "intensity": [],
+                "causality": []
+            },
+            "sentiment": "positive",
+            "primary_type": "success",
+            "tags": [
+                "delivery",
+                "technical"
+            ]
+        }
+    ],
+    "facts": [
+        {
+            "fact_id": "f1",
+            "text": "Led migration of payment service to Kubernetes, completed one month earlier than expected",
+            "rating": "Exceeds expectations",
+            "signals": {
+                "numbers": [
+                    "one month"
+                ],
+                "entities": [
+                    "payment service",
+                    "Kubernetes"
+                ],
+                "acronyms": [
+                    "Kubernetes"
+                ],
+                "modality": [],
+                "intensity": [],
+                "causality": []
+            },
+            "sentiment": "positive",
+            "primary_type": "success",
+            "tags": [
+                "delivery",
+                "technical"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "claim_id": "c1",
+            "fact_ids": [
+                "f1"
+            ],
+            "scores": {
+                "semantic_similarity": 0.88,
+                "lexical_overlap": 0.71,
+                "number_match": "exact",
+                "entity_match_ratio": 1.0,
+                "modality_match": "n/a"
+            },
+            "verdict": "supported",
+            "reasons": []
+        }
+    ]
+}
