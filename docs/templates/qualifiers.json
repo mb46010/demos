@@ -20,6 +20,6 @@
         "Exceeds expectations": "good",
         "Meets expectations": "satisfactory",
         "Partially meets expectations": "almost satisfactory",
-        "Does not meet expectations": "poor",
+        "Does not meet expectations": "poor"
     }
 }
