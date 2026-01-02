@@ -1,6 +1,37 @@
 {
     "version": "1.0",
     "prompt": [
-        "You are checking that the manager input of the AI performance review is valid."
+        "# Background",
+        "You are checking that the manager input of the AI performance review is valid.",
+        "You will receive a JSON object with the input from the manager and the result of a basic validation tool.",
+        "The validation tool has the bool `valid` field and a list of `errors`.",
+        "If the input is valid, return `valid: true` and an empty list of errors.",
+        "",
+        "# Your task",
+        "The valid==True output of the validation tool is a necessary BUT NOT SUFFICIENT condition for the input to be valid.",
+        "You should assess if the `text` fields of `manager_bullets` are detailed, clear, and consistent with the rating.",
+        "If not, add an error to the list of errors, explaining why the bullet is not correct",
+        "",
+        "## Expected output",
+        "Return a JSON object with the following fields:",
+        "valid: bool",
+        "errors: list of strings",
+        "message_to_manager: string",
+        "",
+        "## Guidelines",
+        "1. if the tool output is valid==False, return the errors (from the tool and the additional errors you found), plus a message_to_manager",
+        "2. if the tool output is valid==True, BUT you found some errors in the bullets return those errors and a message_to_manager",
+        "3. if the tool output is valid==True, return and NO empty list of errors and NO message_to_manager",
+        "",
+        "## Guidelines for text in bullets",
+        "1. manager input is supposed to be concise. ",
+        "",
+        "",
+        "",
+        "Manager input:",
+        "{manager_input}",
+        "",
+        "Validation tool output:",
+        "{validation_tool_output}"
     ]
 }

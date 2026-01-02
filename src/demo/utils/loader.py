@@ -19,6 +19,17 @@ def load_prompts(prompts_dir: Path = Path("src/prompts"), field_name: str = "pro
             prompts[file_path.stem] = data[field_name]
     return prompts
 
+def load_prompt(prompt_path: Path, field_name: str = "prompt") -> str:
+    """Load prompts from JSON files in the specified directory."""
+    if not prompt_path.exists():
+        raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+        
+    data = load_json(prompt_path)
+    if field_name in data:
+        return data[field_name]
+    raise ValueError(f"Prompt field not found: {field_name}")
+
+
 def load_data(
     input_path: Path = Path("data/input.json"),
     structure_path: Path = Path("docs/templates/review_format.json"),

@@ -1,10 +1,16 @@
+"""
+run with uv run python src/demo/graph/graph.py
+"""
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langgraph.graph import StateGraph, START, END
 from demo.graph.state import GraphState
 from demo.graph.nodes import input_check
 from demo.utils.loader import load_data, get_manager_id
+from pprint import pprint
 
 # Define a small graph
 # flowchart LR
@@ -47,7 +53,7 @@ if __name__ == "__main__":
     load_dotenv()
     data = load_data()
     print("Manager Input:")
-    print(data["input"])
+    pprint(data["input"])
 
     config = {
         "input": data["input"],
@@ -57,7 +63,10 @@ if __name__ == "__main__":
     }
 
     response = agent.invoke(config)
-    print(response)
-    
+    last_stage_name = "check_result"
+    last_stage_result = response.get(last_stage_name)
+
+    print()
+    print(last_stage_result)
+
     save_json(response, "data/output_00.json")
-    

@@ -1,5 +1,5 @@
-from typing import Any, Dict
-from langchain.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
+from typing import Any, Dict, Optional
+from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 
 from typing_extensions import TypedDict, Annotated
 import operator
@@ -13,6 +13,7 @@ class GraphState(TypedDict):
     qualifiers: Dict[str, Any]
     draft: Dict[str, Any]
     manager_id: str
+    check_result: Optional[Dict[str, Any]]
 
 
 class MessagesState(TypedDict):

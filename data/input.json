@@ -4,19 +4,19 @@
     "rating": "Exceeds expectations",
     "manager_bullets": [
         {
-            "text": "Led migration of payment service to Kubernetes",
+            "text": "Led migration of payment service to Kubernetes, completed one month earlier than expected",
             "rating": "Exceeds expectations"
         },
         {
-            "text": "Reduced deployment time from 2 hours to 15 minutes",
+            "text": "Reduced deployment time from 2 hours to 15 minutes, as per KPI",
             "rating": "Meets expectations"
         },
         {
-            "text": "Mentored two junior engineers",
+            "text": "Mentored two junior engineers, with positive feedback from them and successfull upskilling",
             "rating": "Exceeds expectations"
         },
         {
-            "text": "Sometimes misses deadlines when overloaded",
+            "text": "Sometimes misses deadlines when overloaded, due to capacity issues. Communication MUST improve.",
             "rating": "Does not meet expectations"
         }
     ]

@@ -92,5 +92,15 @@
             "Does not meet expectations": "poor"
         }
     },
-    "manager_id": "12345678-1234-1234-1234-123456789012"
+    "manager_id": "12345678-1234-1234-1234-123456789012",
+    "check_result": {
+        "valid": false,
+        "errors": [
+            "Bullet 1 ('Led migration of payment service to Kubernetes') is too vague and does not provide enough detail to justify an 'Exceeds expectations' rating. Please specify the impact, challenges overcome, or results achieved.",
+            "Bullet 2 ('Reduced deployment time from 2 hours to 15 minutes') is rated as 'Meets expectations' but describes a significant improvement that may warrant a higher rating or more context as to why it is not exceeding expectations.",
+            "Bullet 3 ('Mentored two junior engineers') lacks detail on the effectiveness or outcomes of the mentoring to justify 'Exceeds expectations'. Please elaborate on the impact.",
+            "Bullet 4 ('Sometimes misses deadlines when overloaded') is rated as 'Does not meet expectations' but is not consistent with an overall 'Exceeds expectations' rating. Please clarify how this area for improvement fits with the overall assessment."
+        ],
+        "message_to_manager": "Some of your review bullets lack sufficient detail or are inconsistent with the ratings provided. Please add more specifics to justify the ratings, especially for 'Exceeds expectations', and ensure the overall rating aligns with the feedback in the bullets."
+    }
 }

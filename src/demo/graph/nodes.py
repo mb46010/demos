@@ -1,9 +1,9 @@
-from langchain_openai import ChatOpenAI
+
 from langchain_core.messages import SystemMessage
 from demo.graph.state import GraphState
+from demo.graph.nodes.n_input import input_check
 
-# 1. Init an openai model
-llm = ChatOpenAI(model="gpt-4o")
+from demo.graph.model import llm
 
 # 3. Define a model node
 def call_model(state: GraphState):
@@ -11,8 +11,8 @@ def call_model(state: GraphState):
     response = llm.invoke(messages)
     return {"messages": [response]}
 
-# Node for InputCheck (N1)
-def input_check(state: GraphState):
-    # Logic to check input can be added here
-    # For now, it just passes through as per the diagram N1 -> END
-    return state
+# # Node for InputCheck (N1)
+# def input_check(state: GraphState):
+#     # Logic to check input can be added here
+#     # For now, it just passes through as per the diagram N1 -> END
+#     return state
