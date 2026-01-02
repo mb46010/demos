@@ -15,11 +15,91 @@
             }
         }
     },
-    "qualifiers": {
-        "Strongly exceeds expectations": "excellent",
-        "Exceeds expectations": "good",
-        "Meets expectations": "satisfactory",
-        "Partially meets expectations": "almost satisfactory",
-        "Does not meet expectations": "poor"
+    "performance_levels": {
+        "strongly_exceeds": {
+            "canonical": "outstanding",
+            "rating_label": "Strongly exceeds expectations",
+            "severity": 5,
+            "allowed_synonyms": [
+                "outstanding",
+                "exceptional",
+                "consistently exceptional",
+                "far exceeds expectations",
+                "top-tier",
+                "role-model performance"
+            ],
+            "forbidden_softeners": [
+                "good",
+                "solid",
+                "strong"
+            ]
+        },
+        "exceeds": {
+            "canonical": "strong",
+            "rating_label": "Exceeds expectations",
+            "severity": 4,
+            "allowed_synonyms": [
+                "strong",
+                "very good",
+                "high-quality",
+                "reliably exceeds expectations",
+                "above expectations"
+            ],
+            "forbidden_softeners": [
+                "satisfactory",
+                "adequate"
+            ]
+        },
+        "meets": {
+            "canonical": "solid",
+            "rating_label": "Meets expectations",
+            "severity": 3,
+            "allowed_synonyms": [
+                "solid",
+                "reliable",
+                "consistent",
+                "meets expectations",
+                "as expected",
+                "dependable"
+            ],
+            "forbidden_softeners": [
+                "excellent",
+                "exceptional"
+            ]
+        },
+        "partially_meets": {
+            "canonical": "needs improvement",
+            "rating_label": "Partially meets expectations",
+            "severity": 2,
+            "allowed_synonyms": [
+                "needs improvement",
+                "inconsistent",
+                "below expectations in some areas",
+                "partially meets expectations",
+                "requires development"
+            ],
+            "forbidden_softeners": [
+                "almost satisfactory",
+                "mostly meets",
+                "generally fine"
+            ]
+        },
+        "does_not_meet": {
+            "canonical": "unsatisfactory",
+            "rating_label": "Does not meet expectations",
+            "severity": 1,
+            "allowed_synonyms": [
+                "unsatisfactory",
+                "below expectations",
+                "performance gaps",
+                "does not meet expectations",
+                "requires immediate improvement"
+            ],
+            "forbidden_softeners": [
+                "poor",
+                "not ideal",
+                "could be better"
+            ]
+        }
     }
 }
