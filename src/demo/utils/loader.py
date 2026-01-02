@@ -62,3 +62,23 @@ def get_manager_id(input_data: Dict[str, Any]) -> str:
     # Assuming the structure based on typical input.json, but making it robust
     # Adjust this based on actual input.json structure if needed
     return input_data.get("manager_id", (input_data.get("manager") or {}).get("id", ""))
+
+
+def load_fact_checker(fact_checker_path: Path = Path("data/input_fact_checker.json")) -> Dict[str, Any]:
+    """Load fact checker from JSON file."""
+    if not fact_checker_path.exists():
+        raise FileNotFoundError(f"Fact checker file not found: {fact_checker_path}")
+    full_data = load_json(fact_checker_path)
+
+    input_data = full_data.get("input")
+    draft_data = full_data.get("draft")
+
+    if input_data is None:
+        raise ValueError(f"Missing required 'input' field in {fact_checker_path}")
+    if draft_data is None:
+        raise ValueError(f"Missing required 'draft' field in {fact_checker_path}")
+
+    return {
+        "input": input_data,
+        "draft": draft_data,
+    }
