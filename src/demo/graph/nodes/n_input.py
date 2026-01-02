@@ -9,7 +9,7 @@ from typing import List, Optional
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
-from demo.graph.consts import KEY_CHECK_RESULT, KEY_INPUT, KEY_QUALIFIERS
+from demo.graph.consts import KEY_CHECK_RESULT, KEY_INPUT, KEY_QUALIFIERS, NODE_INPUT_CHECK
 from demo.graph.model import llm
 from demo.graph.state import GraphState
 from demo.tools.validate_input import validate_input
@@ -35,7 +35,7 @@ def input_check(state: GraphState):
     2. Feeds both the input and tool results to an LLM for semantic check.
     3. Merges results and ensures consistency (e.g., if errors exist, valid must be False).
     """
-    logger.info("Stage: %s started.", KEY_CHECK_RESULT)
+    logger.info("Stage: %s started.", NODE_INPUT_CHECK)
 
     # Load prompt and join if it's a list
     prompt_raw = load_prompt(Path("src/prompts/n_input.json"))
@@ -59,9 +59,9 @@ def input_check(state: GraphState):
     # Update state
     check_result = response.model_dump()
 
-    print()
-    print("LLM Check Result:")
-    pprint(check_result)
+    # print()
+    # print("LLM Check Result:")
+    # pprint(check_result)
 
     # Fixing LLM inconsistencies and ensuring tool output is respected
     errors = check_result.get("errors", [])
@@ -110,7 +110,7 @@ def input_check(state: GraphState):
     print("Final Validation Result:")
     pprint(final_result)
 
-    logger.info("Stage: %s passed.", KEY_CHECK_RESULT)
+    logger.info("Stage: %s completed.", NODE_INPUT_CHECK)
     return {KEY_CHECK_RESULT: final_result}
 
 

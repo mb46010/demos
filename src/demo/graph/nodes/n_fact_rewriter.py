@@ -53,9 +53,9 @@ def fc_rewriter(state: GraphState):
     # Update state
     new_draft = response.model_dump()
 
-    print()
-    print("LLM New Draft Result:")
-    pprint(new_draft)
+    # print()
+    # print("LLM New Draft Result:")
+    # pprint(new_draft)
 
     # Overwrite draft and ncrement revision number
     current_revision = state.get("revision_number", 0) or 0
