@@ -3,31 +3,43 @@
     "sections": [
         {
             "title": "Year Goals",
-            "description": "Year Goals"
+            "description": "Year Goals",
+            "optional": true
         },
         {
             "title": "Successes",
-            "description": "Successes"
+            "description": "Successes",
+            "optional": true
+        },
+        {
+            "title": "Misses",
+            "description": "Misses",
+            "optional": true
         },
         {
             "title": "Challenges",
-            "description": "Challenges"
+            "description": "Challenges",
+            "optional": true
         },
         {
             "title": "Performance rating and discussion",
-            "description": "Performance rating and discussion"
+            "description": "Performance rating and discussion",
+            "optional": false
         },
         {
             "title": "Strengths",
-            "description": "Strengths"
+            "description": "Strengths",
+            "optional": true
         },
         {
             "title": "Development Areas",
-            "description": "Development Areas"
+            "description": "Development Areas",
+            "optional": false
         },
         {
             "title": "Feedback",
-            "description": "Feedback"
+            "description": "Feedback",
+            "opttional": false
         }
     ]
 }
