@@ -82,3 +82,11 @@ def load_fact_checker(fact_checker_path: Path = Path("data/input_fact_checker.js
         "input": input_data,
         "draft": draft_data,
     }
+
+
+def load_fact_checker_output(fact_checker_path: Path = Path("data/input_fact_checker.json")) -> Dict[str, Any]:
+    """Load fact checker from JSON file."""
+    if not fact_checker_path.exists():
+        raise FileNotFoundError(f"Fact checker file not found: {fact_checker_path}")
+    full_data = load_json(fact_checker_path)
+    return full_data

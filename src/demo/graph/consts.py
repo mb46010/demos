@@ -4,7 +4,7 @@
 NODE_INPUT_CHECK = "input_check"
 NODE_CREATE_DRAFT = "create_draft"
 NODE_FACT_CHECKER_CLAIM_EXTRACTOR = "claim_extractor"
-NODE_FACT_CHECKER_CLAIM_VERIFIER = "claim_verifier"
+NODE_FACT_CHECKER_REWRITER = "rewriter"
 
 # State Keys
 KEY_INPUT = "input"
@@ -16,4 +16,4 @@ KEY_CHECK_RESULT = "check_result"
 
 # Fact Checker Keys
 KEY_FACT_CHECKER_CLAIMS_EXTRACTED = "claims_extracted"
-KEY_FACT_CHECKER_CLAIMS_VERIFIED = "claims_verified"
+KEY_FACT_CHECKER_REWRITTER = "new_draft"

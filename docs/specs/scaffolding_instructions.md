@@ -60,3 +60,20 @@ flowchart LR
     N4 -->|not approved| N5[Revise Draft]
     N5 --> N3
 ```
+
+
+# Improvements
+
+## Fact Extractor
+
+To address the reliability of the scores, I recommend moving the calculation responsibility from the LLM (which acts as a stochastic estimator) to a deterministic Python function.
+
+Keep the LLM for "Qualitative" Linking: Continue using the LLM to perform the "fuzzy" work: extracting claims/facts, identifying which claim maps to which fact, and determining the initial qualitative verdict (e.g., "supported" by fact f1).
+Introduce a "Scoring" Function: Immediately after the extraction step (or as a separate node in the graph), iterate through the generated links and recalculate the scores object using standard Python libraries.
+Semantic Similarity: Use an embedding model (like OpenAI's embeddings or a local model) to vectorize the claim text and fact text, then compute the cosine similarity.
+Lexical Overlap: Use simple set operations (Jaccard Index) on the tokenized words of both texts.
+Entity/Number Matching: Use a lightweight NLP library (like spaCy) or Regex to extract entities and numbers from both strings, then mathematically calculate the intersection ratio.
+Update the State: Overwrite the hallucinated/estimated scores in the JSON structure with these computed, ground-truth values before passing the data to the next stage.
+This Hybrid Approach leverages the LLM for its reasoning capabilities (understanding meaning) and code for its calculation capabilities (precision).
+
+
