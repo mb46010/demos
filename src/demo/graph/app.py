@@ -1,4 +1,4 @@
-"""run with uv: uv run python src/demo/graph/app.py data/input_invalid.json  ."""
+"""run with uv: uv run python src/demo/graph/app.py --input_file data/input_invalid.json."""
 
 import argparse
 import logging
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     }
 
     response = agent.invoke(config)
-    last_stage_name = "check_result"
+    last_stage_name = response.get("last_node")
     last_stage_result = response.get(last_stage_name)
 
     print("Last stage result:")

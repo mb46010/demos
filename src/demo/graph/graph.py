@@ -6,7 +6,8 @@ from pprint import pprint
 from dotenv import load_dotenv
 from langgraph.graph import END, START, StateGraph
 
-from demo.graph.nodes import input_check
+from demo.graph.nodes.n_draft import create_draft
+from demo.graph.nodes.n_input import check_valid, input_check
 from demo.graph.state import GraphState
 from demo.utils.loader import get_manager_id, load_data
 from demo.utils.save_json import save_json
@@ -19,33 +20,11 @@ def create_agent():
     agent_builder = StateGraph(GraphState)
 
     agent_builder.add_node("InputCheck", input_check)
+    agent_builder.add_node("CreateDraft", create_draft)
 
     agent_builder.add_edge(START, "InputCheck")
-    agent_builder.add_edge("InputCheck", END)
+    agent_builder.add_conditional_edges("InputCheck", check_valid, {"True": "CreateDraft", "False": END})
+    agent_builder.add_edge("CreateDraft", END)
 
     agent = agent_builder.compile()
     return agent
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    data = load_data()
-    print("Manager Input:")
-    pprint(data["input"])
-
-    config = {
-        "input": data["input"],
-        "structure": data["structure"],
-        "qualifiers": data["qualifiers"],
-        "manager_id": get_manager_id(data["input"]),
-    }
-
-    response = agent.invoke(config)
-    last_stage_name = "check_result"
-    last_stage_result = response.get(last_stage_name)
-
-    print()
-    pprint(last_stage_result)
-
-    timedate = datetime.now().strftime("%Y%m%d_%H%M%S")
-    save_json(response, f"data/output_{timedate}.json")

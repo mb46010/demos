@@ -108,5 +108,15 @@ def input_check(state: GraphState):
     pprint(final_result)
 
     state["check_result"] = final_result
+    state["last_node"] = "check_result"
 
     return state
+
+
+def check_valid(state: GraphState):
+    """Gate function to check if valid == True."""
+    # Safe access using .get() to handle cases where check_result or valid might be missing/None
+    check_result = state.get("check_result")
+    if check_result and check_result.get("valid"):
+        return "True"
+    return "False"
