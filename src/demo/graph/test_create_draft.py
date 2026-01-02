@@ -15,7 +15,7 @@ from demo.graph.consts import (
     KEY_QUALIFIERS,
     KEY_STRUCTURE,
 )
-from demo.graph.graph import create_full_agent
+from demo.graph.graph import create_draft_agent
 from demo.utils.loader import get_manager_id, load_data
 from demo.utils.save_json import save_json
 
@@ -47,9 +47,9 @@ if __name__ == "__main__":
         KEY_QUALIFIERS: data["qualifiers"],
         KEY_MANAGER_ID: get_manager_id(data["input"]),
     }
-    agent_builder = create_full_agent()
-    agent = agent_builder.compile()
 
+    agent_builder = create_draft_agent()
+    agent = agent_builder.compile()
     response = agent.invoke(config)
 
     # Check if we have a draft (success path) or just check result (failure path)

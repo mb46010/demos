@@ -11,8 +11,11 @@ from dotenv import load_dotenv
 from demo.graph.consts import (
     KEY_DRAFT,
     KEY_FACT_CHECKER_CLAIMS_EXTRACTED,
-    KEY_FACT_CHECKER_CLAIMS_VERIFIED,
     KEY_INPUT,
+    KEY_MANAGER_ID,
+    KEY_QUALIFIERS,
+    KEY_REWRITER,
+    KEY_STRUCTURE,
 )
 from demo.graph.fact_check_subgraph import create_fact_check_subgraph
 from demo.utils.loader import load_fact_checker
@@ -38,22 +41,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Load data
-    data = load_fact_checker(fact_checker_path=Path(args.input_file))
+    draft_data = load_fact_checker(fact_checker_path=Path(args.input_file))
     # print(f"Manager Input (from {args.input_file}):")
     # pprint(data["input"])
 
     config = {
-        KEY_INPUT: data["input"],
-        KEY_DRAFT: data["draft"],
+        KEY_INPUT: draft_data["input"],
+        KEY_DRAFT: draft_data["draft"],
+        KEY_STRUCTURE: draft_data["structure"],
+        KEY_QUALIFIERS: draft_data["qualifiers"],
+        KEY_MANAGER_ID: draft_data["manager_id"],
     }
 
     response = agent.invoke(config)
 
     # # Check if we have a draft (success path) or just check result (failure path)
-    if response.get(KEY_FACT_CHECKER_CLAIMS_VERIFIED):
+    if response.get(KEY_REWRITER):
         print("Success! Draft created.")
-        pprint(response[KEY_FACT_CHECKER_CLAIMS_VERIFIED])
-        final_output = response[KEY_FACT_CHECKER_CLAIMS_VERIFIED]
+        pprint(response[KEY_REWRITER])
+        final_output = response[KEY_REWRITER]
     else:
         print("Validation failed or incomplete.")
         pprint(response.get(KEY_FACT_CHECKER_CLAIMS_EXTRACTED))

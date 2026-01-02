@@ -70,18 +70,19 @@ def load_fact_checker(fact_checker_path: Path = Path("data/input_fact_checker.js
         raise FileNotFoundError(f"Fact checker file not found: {fact_checker_path}")
     full_data = load_json(fact_checker_path)
 
-    input_data = full_data.get("input")
-    draft_data = full_data.get("draft")
+    return full_data
+    # input_data = full_data.get("input")
+    # draft_data = full_data.get("draft")
 
-    if input_data is None:
-        raise ValueError(f"Missing required 'input' field in {fact_checker_path}")
-    if draft_data is None:
-        raise ValueError(f"Missing required 'draft' field in {fact_checker_path}")
+    # if input_data is None:
+    #     raise ValueError(f"Missing required 'input' field in {fact_checker_path}")
+    # if draft_data is None:
+    #     raise ValueError(f"Missing required 'draft' field in {fact_checker_path}")
 
-    return {
-        "input": input_data,
-        "draft": draft_data,
-    }
+    # return {
+    #     "input": input_data,
+    #     "draft": draft_data,
+    # }
 
 
 def load_fact_checker_output(fact_checker_path: Path = Path("data/input_fact_checker.json")) -> Dict[str, Any]:

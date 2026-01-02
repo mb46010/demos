@@ -13,6 +13,7 @@ from demo.graph.consts import (
     KEY_DRAFT,
     KEY_FACT_CHECKER_CLAIMS_EXTRACTED,
     KEY_INPUT,
+    NODE_FACT_CHECKER_CLAIM_EXTRACTOR,
 )
 from demo.graph.model import llm
 from demo.graph.nodes.fact_models import FactPairs
@@ -24,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 def fc_extractor(state: GraphState):
     """Extract claim-fact pairs."""
-    logger.info("Stage: %s started.", KEY_FACT_CHECKER_CLAIMS_EXTRACTED)
+    logger.info("Stage: %s started.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
 
     # Load prompt and join if it's a list
     try:
@@ -53,16 +54,42 @@ def fc_extractor(state: GraphState):
     # Update state
     fact_pairs = response.model_dump()
 
-    print()
-    print("LLM Fact Pairs:")
-    pprint(fact_pairs)
+    # print()
+    # print("LLM Fact Pairs:")
+    # pprint(fact_pairs)
 
-    logger.info("Stage: %s passed.", KEY_FACT_CHECKER_CLAIMS_EXTRACTED)
+    logger.info("Stage: %s passed.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
     return {KEY_FACT_CHECKER_CLAIMS_EXTRACTED: fact_pairs["claim_fact_pairs"]}
 
 
-def check_fc_result(state: GraphState) -> str:
-    """Check if claims were extracted successfully."""
-    if state.get(KEY_FACT_CHECKER_CLAIMS_EXTRACTED):
+def needs_rewrite(state: GraphState) -> str:
+    """Check if claims were extracted successfully.
+
+    If discrepancies (unsupported or partially supported claims) are found,
+    we return "True" to trigger a rewrite.
+    If all claims are supported, we return "False" to skip/stop the rewrite.
+    """
+    current_revision = state.get("revision_number", 0) or 0
+    if current_revision >= 3:
+        logger.warning("Stage: %s max revisions reached (3). Stopping loop.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
+        return "False"
+
+    claims_data = state.get(KEY_FACT_CHECKER_CLAIMS_EXTRACTED)
+    if not claims_data:
+        logger.info("Stage: %s found no issues: no modifications needed.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
+        return "False"
+
+    # Check for discrepancies in links
+    links = claims_data.get("links", [])
+    issues = [link for link in links if link.get("verdict") != "supported"]
+
+    if issues:
+        # We found issues (unsupported or partially supported)
+        logger.info(
+            "Stage: %s found %s discrepancies: modifications needed.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR, len(issues)
+        )
         return "True"
+
+    # All links are "supported"
+    logger.info("Stage: %s found no issues: all claims supported.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
     return "False"

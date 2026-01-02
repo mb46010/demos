@@ -22,4 +22,4 @@ class GraphState(InputState):
     draft: Optional[Dict[str, Any]]
     check_result: Optional[Dict[str, Any]]
     claims_extracted: Optional[Dict[str, Any]]
-    claims_verified: Optional[Dict[str, Any]]
+    revision_number: int
