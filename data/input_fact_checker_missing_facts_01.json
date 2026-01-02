@@ -1,0 +1,102 @@
+{
+    "input": {
+        "manager_id": "12345678-1234-1234-1234-123456789012",
+        "employee": "Software Engineer, 2 years tenure",
+        "rating": "Exceeds expectations",
+        "manager_bullets": [
+            {
+                "text": "Led migration of payment service to Kubernetes, completed one month earlier than expected",
+                "rating": "Exceeds expectations"
+            },
+            {
+                "text": "Reduced deployment time from 2 hours to 15 minutes, as per KPI",
+                "rating": "Meets expectations"
+            },
+            {
+                "text": "Mentored two junior engineers, with positive feedback from them and successfull upskilling",
+                "rating": "Exceeds expectations"
+            },
+            {
+                "text": "Sometimes misses deadlines when overloaded, due to capacity issues. Communication MUST improve.",
+                "rating": "Does not meet expectations"
+            }
+        ]
+    },
+    "structure": {
+        "version": "1.0",
+        "sections": [
+            {
+                "title": "Year Goals",
+                "description": "Year Goals",
+                "optional": true
+            },
+            {
+                "title": "Successes",
+                "description": "Successes",
+                "optional": true
+            },
+            {
+                "title": "Misses",
+                "description": "Misses",
+                "optional": true
+            },
+            {
+                "title": "Challenges",
+                "description": "Challenges",
+                "optional": true
+            },
+            {
+                "title": "Performance rating and discussion",
+                "description": "Performance rating and discussion",
+                "optional": false
+            },
+            {
+                "title": "Strengths",
+                "description": "Strengths",
+                "optional": true
+            },
+            {
+                "title": "Development Areas",
+                "description": "Development Areas",
+                "optional": false
+            },
+            {
+                "title": "Feedback",
+                "description": "Feedback",
+                "opttional": false
+            }
+        ]
+    },
+    "qualifiers": {
+        "version": "1.0",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "performance_rating": {
+                    "type": "string",
+                    "enum": [
+                        "Strongly exceeds expectations",
+                        "Exceeds expectations",
+                        "Meets expectations",
+                        "Partially meets expectations",
+                        "Does not meet expectations"
+                    ]
+                }
+            }
+        },
+        "qualifiers": {
+            "Strongly exceeds expectations": "excellent",
+            "Exceeds expectations": "good",
+            "Meets expectations": "satisfactory",
+            "Partially meets expectations": "almost satisfactory",
+            "Does not meet expectations": "poor"
+        }
+    },
+    "manager_id": "12345678-1234-1234-1234-123456789012",
+    "draft": "## Successes\n- {employee_name} led the migration of the payment service to Kubernetes, completing the project one month ahead of schedule.\n- {employee_name} successfully reduced deployment time from 2 hours to 15 minutes, meeting the established KPI.\n- {employee_name} mentored two junior engineers, who provided positive feedback and demonstrated successful upskilling as a result of {employee_possessive_pronouns} guidance.\n- {employee_name} has designed and presented the roadmap for DevOps automation, to senior IT leadership, with positive feedback.\n\n## Misses\n- {employee_name} has occasionally missed deadlines when overloaded, primarily due to capacity issues.\n\n## Challenges\n- {employee_name} faces challenges with workload management, which has sometimes impacted the ability to meet deadlines. Also, {employee_name}'s knowledge of SRE and security best practices is limited.\n\n## Performance rating and discussion\n- Overall, {employee_name}'s performance is rated as \"Exceeds expectations.\" {employee_name} has demonstrated strong technical leadership and mentoring abilities, as well as a commitment to improving key processes. However, there are areas for improvement in communication and workload management.\n\n## Strengths\n- Technical leadership, as demonstrated by the successful and early migration of critical services.\n- Process improvement, particularly in reducing deployment times to meet KPIs.\n- Mentoring and upskilling junior team members, with positive outcomes.\n\n## Development Areas\n- {employee_name} should focus on improving communication, especially when facing capacity constraints, to ensure better alignment and timely delivery.\n\n## Feedback\n- {employee_name} is encouraged to continue leveraging {employee_possessive_pronouns} technical expertise and mentoring skills. Improving communication and proactively managing workload will further enhance {employee_possessive_pronouns} effectiveness and impact within the team.",
+    "check_result": {
+        "valid": true,
+        "errors": [],
+        "message_to_manager": null
+    }
+}
