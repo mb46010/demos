@@ -51,6 +51,7 @@ if __name__ == "__main__":
         KEY_STRUCTURE: draft_data["structure"],
         KEY_QUALIFIERS: draft_data["qualifiers"],
         KEY_MANAGER_ID: draft_data["manager_id"],
+        "revision_number": 0,
     }
 
     response = agent.invoke(config)

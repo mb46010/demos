@@ -2,7 +2,11 @@ from typing import Any, Dict, List, Union
 
 
 def validate_input(
-    input_data: Dict[str, Any], qualifiers_data: Dict[str, Any], min_bullets: int = 3, min_ratings: int = 2
+    input_data: Dict[str, Any],
+    qualifiers_data: Dict[str, Any],
+    min_bullets: int = 3,
+    min_ratings: int = 2,
+    min_text_length: int = 10,
 ) -> Dict[str, Union[bool, List[str]]]:
     """Validate the input data against the requirements.
     - the fields `manager_id`, employee, manager_bullets are not empty.
@@ -56,6 +60,9 @@ def validate_input(
 
             if not item.get("text"):
                 errors.append(f"Bullet item {i} missing 'text'.")
+            text = item.get("text")
+            if len(text) < min_text_length:
+                errors.append(f"Bullet item {i} 'text' is too short.")
 
             rating = item.get("rating")
             if rating:

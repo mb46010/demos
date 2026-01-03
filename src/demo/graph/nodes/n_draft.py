@@ -29,11 +29,7 @@ def create_draft(state: GraphState):
     logger.info("Stage: %s started.", NODE_CREATE_DRAFT)
 
     # Load prompt and join if it's a list
-    prompt_raw = load_prompt(Path("src/prompts/n_draft.json"))
-    if isinstance(prompt_raw, list):
-        prompt_template = "\n".join(prompt_raw)
-    else:
-        prompt_template = prompt_raw
+    prompt_template = load_prompt(Path("src/prompts/n_draft.json"))
 
     # Fill the prompt
     filled_prompt = prompt_template.format(
@@ -46,7 +42,13 @@ def create_draft(state: GraphState):
     response = llm.with_structured_output(DraftResult).invoke([HumanMessage(content=filled_prompt)])
 
     # Update state
-    draft_result = response.model_dump()
+    if response is None:
+        raise ValueError("LLM failed to return a valid structured output.")
+    try:
+        draft_result = response.model_dump()
+    except Exception as e:
+        logger.exception("Failed to parse LLM response: %s", str(e))
+        raise
 
     # print()
     # print("LLM Draft Result:")

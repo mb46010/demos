@@ -5,6 +5,7 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 from langgraph.graph import END, START, StateGraph
+from langgraph.pregel import RetryPolicy
 
 from demo.graph.consts import NODE_FACT_CHECKER_CLAIM_EXTRACTOR, NODE_REWRITER
 from demo.graph.nodes.n_fact_extractor import fc_extractor, needs_rewrite
@@ -14,17 +15,20 @@ from demo.utils.loader import load_fact_checker
 from demo.utils.save_json import save_json
 
 load_dotenv()
+DEFAULT_MAX_ATTEMPTS = 3
 
 
-def create_fact_check_subgraph(add_loader_node: bool = True):
+def create_fact_check_subgraph(max_attempts: int = DEFAULT_MAX_ATTEMPTS):
     """Create the agent."""
     subgraph_builder = StateGraph(GraphState)
 
     # get feedback
-    subgraph_builder.add_node(NODE_FACT_CHECKER_CLAIM_EXTRACTOR, fc_extractor)
+    subgraph_builder.add_node(
+        NODE_FACT_CHECKER_CLAIM_EXTRACTOR, fc_extractor, retry=RetryPolicy(max_attempts=max_attempts)
+    )
 
     # rewriter
-    subgraph_builder.add_node(NODE_REWRITER, fc_rewriter)
+    subgraph_builder.add_node(NODE_REWRITER, fc_rewriter, retry=RetryPolicy(max_attempts=max_attempts))
 
     subgraph_builder.add_edge(START, NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
 

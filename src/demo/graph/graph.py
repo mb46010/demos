@@ -5,6 +5,7 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 from langgraph.graph import END, START, StateGraph
+from langgraph.pregel import RetryPolicy
 
 from demo.graph.consts import NODE_CREATE_DRAFT, NODE_INPUT_CHECK
 from demo.graph.fact_check_subgraph import create_fact_check_subgraph
@@ -15,14 +16,15 @@ from demo.utils.loader import get_manager_id, load_data
 from demo.utils.save_json import save_json
 
 load_dotenv()
+DEFAULT_MAX_ATTEMPTS = 3
 
 
-def create_full_agent():
+def create_full_agent(max_attempts: int = DEFAULT_MAX_ATTEMPTS):
     """Create the full agent with draft and fact check."""
     agent_builder = StateGraph(GraphState)
 
-    agent_builder.add_node(NODE_INPUT_CHECK, input_check)
-    agent_builder.add_node(NODE_CREATE_DRAFT, create_draft)
+    agent_builder.add_node(NODE_INPUT_CHECK, input_check, retry=RetryPolicy(max_attempts=max_attempts))
+    agent_builder.add_node(NODE_CREATE_DRAFT, create_draft, retry=RetryPolicy(max_attempts=max_attempts))
 
     agent_builder.add_edge(START, NODE_INPUT_CHECK)
     agent_builder.add_conditional_edges(NODE_INPUT_CHECK, check_valid, {"True": NODE_CREATE_DRAFT, "False": END})
@@ -38,12 +40,12 @@ def create_full_agent():
     return agent_builder
 
 
-def create_draft_agent():
+def create_draft_agent(max_attempts: int = DEFAULT_MAX_ATTEMPTS):
     """Create the agent."""
     agent_builder = StateGraph(GraphState)
 
-    agent_builder.add_node(NODE_INPUT_CHECK, input_check)
-    agent_builder.add_node(NODE_CREATE_DRAFT, create_draft)
+    agent_builder.add_node(NODE_INPUT_CHECK, input_check, retry=RetryPolicy(max_attempts=max_attempts))
+    agent_builder.add_node(NODE_CREATE_DRAFT, create_draft, retry=RetryPolicy(max_attempts=max_attempts))
 
     agent_builder.add_edge(START, NODE_INPUT_CHECK)
     agent_builder.add_conditional_edges(NODE_INPUT_CHECK, check_valid, {"True": NODE_CREATE_DRAFT, "False": END})

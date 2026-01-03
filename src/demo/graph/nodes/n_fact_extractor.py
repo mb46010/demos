@@ -28,17 +28,8 @@ def fc_extractor(state: GraphState):
     logger.info("Stage: %s started.", NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
 
     # Load prompt and join if it's a list
-    try:
-        prompt_raw = load_prompt(Path("src/prompts/n_fact_extractor.json"))
-    except FileNotFoundError:
-        logger.warning("Prompt file src/prompts/n_fact_extractor.json not found. Using a default prompt.")
-        prompt_raw = "Extract claim-fact pairs from the following manager input.\n\nManager Input:\n{manager_input}"
 
-    if isinstance(prompt_raw, list):
-        prompt_template = "\n".join(prompt_raw)
-    else:
-        prompt_template = prompt_raw
-
+    prompt_template = load_prompt(Path("src/prompts/n_fact_extractor.json"))
     example_data = load_json(Path("docs/templates/claim_fact_pairs.json"))
 
     # Fill the prompt
@@ -52,7 +43,13 @@ def fc_extractor(state: GraphState):
     response = llm.with_structured_output(FactPairs).invoke([HumanMessage(content=filled_prompt)])
 
     # Update state
-    fact_pairs = response.model_dump()
+    if response is None:
+        raise ValueError("LLM failed to return a valid structured output.")
+    try:
+        fact_pairs = response.model_dump()
+    except Exception as e:
+        logger.exception("Failed to parse LLM response: %s", str(e))
+        raise
 
     # print()
     # print("LLM Fact Pairs:")

@@ -29,7 +29,12 @@ def load_prompt(prompt_path: Path, field_name: str = "prompt") -> str:
 
     data = load_json(prompt_path)
     if field_name in data:
-        return data[field_name]
+        prompt_raw = data[field_name]
+        if isinstance(prompt_raw, list):
+            prompt_template = "\n".join(prompt_raw)
+        else:
+            prompt_template = prompt_raw
+        return prompt_template
     raise ValueError(f"Prompt field not found: {field_name}")
 
 

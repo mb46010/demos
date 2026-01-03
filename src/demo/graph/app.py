@@ -46,6 +46,7 @@ if __name__ == "__main__":
         KEY_STRUCTURE: data["structure"],
         KEY_QUALIFIERS: data["qualifiers"],
         KEY_MANAGER_ID: get_manager_id(data["input"]),
+        "revision_number": 0,
     }
     agent_builder = create_full_agent()
     agent = agent_builder.compile()
