@@ -2,18 +2,16 @@
 
 import json
 import logging
-from pathlib import Path
 from pprint import pprint
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from demo.graph.consts import KEY_CHECK_RESULT, KEY_INPUT, KEY_QUALIFIERS, NODE_INPUT_CHECK
-from demo.graph.model import llm
 from demo.graph.state import GraphState
+from demo.prompts.prompt_loader import PromptLoader
 from demo.tools.validate_input import validate_input
-from demo.utils.loader import load_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -26,51 +24,131 @@ class CheckResult(BaseModel):
     message_to_manager: Optional[str] = Field(None, description="Message to be sent back to the manager")
 
 
-# Node for InputCheck (N1)
-def input_check(state: GraphState):
-    """Validate the manager's input using both a basic tool and an LLM.
+# ============================================================================
+# Factory Pattern (Recommended)
+# ============================================================================
 
-    This node:
-    1. Runs a basic validation tool on the raw input.
-    2. Feeds both the input and tool results to an LLM for semantic check.
-    3. Merges results and ensures consistency (e.g., if errors exist, valid must be False).
+
+def create_input_node(llm, prompt_loader: PromptLoader):
+    """Factory function that creates an input check node with injected dependencies.
+
+    Args:
+        llm: Language model instance
+        prompt_loader: PromptLoader instance for loading prompts
+
+    Returns:
+        Configured input check node function
     """
-    logger.info("Stage: %s started.", NODE_INPUT_CHECK)
 
-    # Load prompt and join if it's a list
-    prompt_template = load_prompt(Path("src/prompts/n_input.json"))
+    def input_check(state: GraphState) -> Dict[str, Any]:
+        """Validate the manager's input using both a basic tool and an LLM."""
+        logger.info("Stage: %s started.", NODE_INPUT_CHECK)
 
-    # Validate input
-    validation_result = validate_input(state[KEY_INPUT], state[KEY_QUALIFIERS])
+        try:
+            # 1. Basic Validation Tool
+            validation_result = validate_input(state[KEY_INPUT], state[KEY_QUALIFIERS])
 
-    # Fill the prompt
-    filled_prompt = prompt_template.format(
-        manager_input=json.dumps(state[KEY_INPUT], indent=2),
-        validation_tool_output=json.dumps(validation_result, indent=2),
-    )
+            # 2. Semantic Check with LLM
+            # Load and format prompt
+            filled_prompt = prompt_loader.get_formatted(
+                "n_input",
+                manager_input=json.dumps(state[KEY_INPUT], indent=2),
+                validation_tool_output=json.dumps(validation_result, indent=2),
+            )
 
-    # Invoke LLM with structured output
-    response = llm.with_structured_output(CheckResult).invoke([HumanMessage(content=filled_prompt)])
+            # Invoke LLM
+            response = llm.with_structured_output(CheckResult).invoke([HumanMessage(content=filled_prompt)])
 
-    # Update state
-    if response is None:
-        raise ValueError("LLM failed to return a valid structured output.")
-    try:
+            if response is None:
+                raise ValueError("LLM failed to return a valid structured output.")
+
+            check_result = response.model_dump()
+
+            # 3. Merge and Consistency Check
+            final_result = _ensure_consistency(check_result, validation_result)
+
+            logger.info("Stage: %s completed.", NODE_INPUT_CHECK)
+            print()
+            print("Final Validation Result:")
+            pprint(final_result)
+            return {KEY_CHECK_RESULT: final_result}
+
+        except Exception as e:
+            logger.error(f"Stage: {NODE_INPUT_CHECK} failed: {e}", exc_info=True)
+            raise
+
+    return input_check
+
+
+# ============================================================================
+# Class Pattern (Alternative)
+# ============================================================================
+
+
+class InputChecker:
+    """Input check node as a callable class."""
+
+    def __init__(
+        self,
+        llm,
+        prompt_loader: PromptLoader,
+    ):
+        """Initialize input checker.
+
+        Args:
+            llm: Language model instance
+            prompt_loader: PromptLoader instance
+        """
+        self.llm = llm
+        self.prompt_loader = prompt_loader
+
+    def __call__(self, state: GraphState) -> Dict[str, Any]:
+        """Make the class callable as a LangGraph node."""
+        logger.info("Stage: %s started.", NODE_INPUT_CHECK)
+
+        try:
+            return self._validate(state)
+        except Exception as e:
+            logger.error(f"Stage: {NODE_INPUT_CHECK} failed: {e}", exc_info=True)
+            raise
+
+    def _validate(self, state: GraphState) -> Dict[str, Any]:
+        # 1. Basic Validation Tool
+        validation_result = validate_input(state[KEY_INPUT], state[KEY_QUALIFIERS])
+
+        # 2. Semantic Check with LLM
+        prompt = self._build_prompt(state, validation_result)
+        response = self.llm.with_structured_output(CheckResult).invoke([HumanMessage(content=prompt)])
+
+        if response is None:
+            raise ValueError("LLM failed to return a valid structured output.")
+
         check_result = response.model_dump()
-    except Exception as e:
-        logger.exception("Failed to parse LLM response: %s", str(e))
-        raise
 
-    # print()
-    # print("LLM Check Result:")
-    # pprint(check_result)
+        # 3. Merge and Consistency Check
+        final_result = _ensure_consistency(check_result, validation_result)
 
-    # Fixing LLM inconsistencies and ensuring tool output is respected
+        logger.info("Stage: %s completed.", NODE_INPUT_CHECK)
+        print()
+        print("Final Validation Result:")
+        pprint(final_result)
+        return {KEY_CHECK_RESULT: final_result}
+
+    def _build_prompt(self, state: GraphState, validation_result: Dict) -> str:
+        return self.prompt_loader.get_formatted(
+            "n_input",
+            manager_input=json.dumps(state[KEY_INPUT], indent=2),
+            validation_tool_output=json.dumps(validation_result, indent=2),
+        )
+
+
+def _ensure_consistency(check_result: Dict, validation_result: Dict) -> Dict:
+    """Helper to ensure consistency between tool and LLM results."""
     errors = check_result.get("errors", [])
     message_to_manager = check_result.get("message_to_manager")
     valid = check_result.get("valid")
 
-    # 1. Respect Tool Results: If tool found errors, force valid to False and merge errors
+    # 1. Respect Tool Results
     if not validation_result.get("valid", True):
         if valid:
             logger.warning("Validation tool found errors but LLM suggested input is valid. Forcing valid=False.")
@@ -81,12 +159,12 @@ def input_check(state: GraphState):
             if err not in errors:
                 errors.append(err)
 
-    # 2. Consistency: If there are errors, valid MUST be False
+    # 2. Consistency: If errors exist, valid must be False
     if errors and valid:
         logger.warning("Errors found but valid is True. Forcing valid=False.")
         valid = False
 
-    # 3. Consistency: If valid is False, message_to_manager MUST be provided
+    # 3. Consistency: If valid is False, message_to_manager must be provided
     if not valid and not message_to_manager:
         logger.warning("Validation failed but no message_to_manager provided. Generating fallback message.")
         if errors:
@@ -94,26 +172,18 @@ def input_check(state: GraphState):
         else:
             message_to_manager = "The submitted information is invalid. Please review your entries."
 
-    # 4. Consistency: If valid is True, message_to_manager SHOULD be None
+    # 4. Consistency: If valid is True, message_to_manager should be None
     if valid and message_to_manager:
         logger.warning(
             "Validation passed but message_to_manager was provided. Clearing message: %s", message_to_manager
         )
         message_to_manager = None
 
-    # Update state
-    final_result = {
+    return {
         "valid": valid,
         "errors": errors,
         "message_to_manager": message_to_manager,
     }
-
-    print()
-    print("Final Validation Result:")
-    pprint(final_result)
-
-    logger.info("Stage: %s completed.", NODE_INPUT_CHECK)
-    return {KEY_CHECK_RESULT: final_result}
 
 
 def check_valid(state: GraphState):

@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from demo.config.config import Config
 from demo.graph.consts import KEY_DRAFT, KEY_INPUT, KEY_STRUCTURE
 from demo.graph.state import GraphState
-from demo.utils.prompts.prompt_loader import PromptLoader
+from demo.prompts.prompt_loader import PromptLoader
 
 logger = logging.getLogger(__name__)
 

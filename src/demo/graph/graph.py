@@ -5,13 +5,12 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 from langgraph.graph import END, START, StateGraph
-from langgraph.pregel import RetryPolicy
 
 from demo.config.config import Config
 from demo.graph.consts import NODE_CREATE_DRAFT, NODE_INPUT_CHECK
 from demo.graph.fact_check_subgraph import create_fact_check_subgraph
 from demo.graph.nodes.n_draft import DraftCreator
-from demo.graph.nodes.n_input import check_valid, input_check
+from demo.graph.nodes.n_input import InputChecker, check_valid
 from demo.graph.state import GraphState
 from demo.utils.loader import get_manager_id, load_data
 from demo.utils.save_json import save_json
@@ -26,8 +25,9 @@ def create_full_agent(config: Config, max_attempts: int = DEFAULT_MAX_ATTEMPTS):
     llm = config.create_llm()
     prompt_loader = config.create_prompt_loader()
     node_draft = DraftCreator(llm, prompt_loader)
+    node_input = InputChecker(llm, prompt_loader)
 
-    agent_builder.add_node(NODE_INPUT_CHECK, input_check)
+    agent_builder.add_node(NODE_INPUT_CHECK, node_input)
     agent_builder.add_node(NODE_CREATE_DRAFT, node_draft)
 
     agent_builder.add_edge(START, NODE_INPUT_CHECK)
@@ -48,8 +48,14 @@ def create_draft_agent(config: Config, max_attempts: int = DEFAULT_MAX_ATTEMPTS)
     """Create the draft agent."""
     agent_builder = StateGraph(GraphState)
 
-    agent_builder.add_node(NODE_INPUT_CHECK, input_check, retry=RetryPolicy(max_attempts=max_attempts))
-    agent_builder.add_node(NODE_CREATE_DRAFT, create_draft, retry=RetryPolicy(max_attempts=max_attempts))
+    llm = config.create_llm()
+    prompt_loader = config.create_prompt_loader()
+
+    node_input = InputChecker(llm, prompt_loader)
+    node_draft = DraftCreator(llm, prompt_loader)
+
+    agent_builder.add_node(NODE_INPUT_CHECK, node_input)
+    agent_builder.add_node(NODE_CREATE_DRAFT, node_draft)
 
     agent_builder.add_edge(START, NODE_INPUT_CHECK)
     agent_builder.add_conditional_edges(NODE_INPUT_CHECK, check_valid, {"True": NODE_CREATE_DRAFT, "False": END})

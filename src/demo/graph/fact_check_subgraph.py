@@ -5,7 +5,6 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 from langgraph.graph import END, START, StateGraph
-from langgraph.pregel import RetryPolicy
 
 from demo.graph.consts import NODE_FACT_CHECKER_CLAIM_EXTRACTOR, NODE_REWRITER
 from demo.graph.nodes.n_fact_extractor import fc_extractor, needs_rewrite
@@ -23,12 +22,10 @@ def create_fact_check_subgraph(max_attempts: int = DEFAULT_MAX_ATTEMPTS):
     subgraph_builder = StateGraph(GraphState)
 
     # get feedback
-    subgraph_builder.add_node(
-        NODE_FACT_CHECKER_CLAIM_EXTRACTOR, fc_extractor, retry=RetryPolicy(max_attempts=max_attempts)
-    )
+    subgraph_builder.add_node(NODE_FACT_CHECKER_CLAIM_EXTRACTOR, fc_extractor)
 
     # rewriter
-    subgraph_builder.add_node(NODE_REWRITER, fc_rewriter, retry=RetryPolicy(max_attempts=max_attempts))
+    subgraph_builder.add_node(NODE_REWRITER, fc_rewriter)
 
     subgraph_builder.add_edge(START, NODE_FACT_CHECKER_CLAIM_EXTRACTOR)
 
