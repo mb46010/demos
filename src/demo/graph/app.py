@@ -7,6 +7,7 @@ from pprint import pprint
 
 from dotenv import load_dotenv
 
+from demo.config.config import Config, get_config
 from demo.graph.consts import (
     KEY_CHECK_RESULT,
     KEY_DRAFT,
@@ -22,7 +23,7 @@ from demo.utils.save_json import save_json
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-load_dotenv()
+# load_dotenv()
 
 
 if __name__ == "__main__":
@@ -36,22 +37,24 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    app_config = get_config()
+
     # Load data
     data = load_data(input_path=args.input_file)
     print(f"Manager Input (from {args.input_file}):")
     pprint(data["input"])
 
-    config = {
+    graph_config = {
         KEY_INPUT: data["input"],
         KEY_STRUCTURE: data["structure"],
         KEY_QUALIFIERS: data["qualifiers"],
         KEY_MANAGER_ID: get_manager_id(data["input"]),
         "revision_number": 0,
     }
-    agent_builder = create_full_agent()
+    agent_builder = create_full_agent(app_config)
     agent = agent_builder.compile()
 
-    response = agent.invoke(config)
+    response = agent.invoke(graph_config)
 
     # Check if we have a draft (success path) or just check result (failure path)
     if response.get(KEY_DRAFT):
