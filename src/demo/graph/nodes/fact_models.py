@@ -4,6 +4,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
+# Fact Models
+
 
 class Source(BaseModel):
     """Source information for a claim."""
